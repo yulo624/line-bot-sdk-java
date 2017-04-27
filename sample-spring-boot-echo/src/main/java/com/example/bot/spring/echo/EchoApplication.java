@@ -36,6 +36,7 @@ public class EchoApplication {
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         System.out.println("yulo_event ====>> " + event.getMessage().getText());
+		test();
         return new TextMessage(event.getMessage().getId() + "===>" + event.getMessage().getText());
     }
 
@@ -43,4 +44,20 @@ public class EchoApplication {
     public void handleDefaultMessageEvent(Event event) {
         System.out.println("event: " + event);
     }
+	
+	public void test(){
+		TextMessage textMessage = new TextMessage("hello");
+		PushMessage pushMessage = new PushMessage(
+				"<to>",
+				textMessage
+		);
+
+		Response<BotApiResponse> response =
+				LineMessagingServiceBuilder
+						.create("<channel access token>")
+						.build()
+						.pushMessage(pushMessage)
+						.execute();
+		System.out.println(response.code() + " " + response.message());
+	}
 }
